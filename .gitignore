@@ -1,0 +1,32 @@
+# NetBeans specific files
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# Ant build files
+build.xml
+build.properties
+*.class
+*.jar
+*.war
+*.ear
+
+# Compiled class files
+**/target/
+**/out/
+**/bin/
+*.class
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Maven/Gradle caches (if any)
+.mvn/
+.gradle/
