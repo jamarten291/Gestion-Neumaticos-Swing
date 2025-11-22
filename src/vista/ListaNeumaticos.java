@@ -249,17 +249,18 @@ public class ListaNeumaticos extends javax.swing.JDialog {
                 cbPerfil.getSelectedItem().toString(),
                 precio
             );
-            if (conn.altaNeumatico(n)) {
+            if (conn.actualizarNeumatico(n)) {
+                actualizarTabla();
                 HelperClass.lanzarAlerta(
                     "Información",
-                    "Se ha agregado un neumático de forma exitosa a la base de datos",
+                    "Se ha actualizado el neumático de forma exitosa",
                     JOptionPane.INFORMATION_MESSAGE,
                     this
                 );
             } else {
                 HelperClass.lanzarAlerta(
                     "Error",
-                    "No se ha podido agregar el neumático debido a un error",
+                    "No se ha podido actualizar el neumático debido a un error",
                     JOptionPane.ERROR_MESSAGE,
                     this
                 );

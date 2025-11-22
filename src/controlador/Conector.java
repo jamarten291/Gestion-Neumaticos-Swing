@@ -193,4 +193,41 @@ public class Conector {
         }
         return listaNeumaticos;
     }
+    
+    public boolean actualizarNeumatico(Neumatico n) {
+        boolean flag = false;
+        
+        String query = "UPDATE neumatico "
+                + "SET marca=?, modelo=?, ancho=?, perfil=?, precio=?"
+                + "WHERE cod=?";
+        PreparedStatement ps = null;
+        try {
+            conn = getConnection();
+            ps = conn.prepareStatement(query);
+            
+            ps.setString(1, n.getMarca());
+            ps.setString(2, n.getModelo());
+            ps.setInt(3, n.getAncho());
+            ps.setString(4, n.getPerfilStr());
+            ps.setDouble(5, n.getPrecio());
+            ps.setInt(6, n.getCodigo());
+            ps.execute();
+            flag = true;
+        } catch (SQLException ex) {
+            System.getLogger(Conector.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (SQLException ex) {
+                System.getLogger(Conector.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            }
+        }
+        
+        return flag;
+    }
 }
