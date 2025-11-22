@@ -1,18 +1,17 @@
-
 package vista;
 
 /**
  *
- * @author jamarten291
+ * @author jacksonmh16
  */
-public class Main extends javax.swing.JFrame {
+public class Menu extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Main.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Menu.class.getName());
 
     /**
-     * Creates new form Main
+     * Creates new form Menu
      */
-    public Main() {
+    public Menu() {
         initComponents();
     }
 
@@ -25,21 +24,52 @@ public class Main extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        alta = new javax.swing.JMenuItem();
+        listar = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jMenu1.setText("Neumáticos");
+
+        alta.setText("Alta neumático");
+        alta.addActionListener(this::altaActionPerformed);
+        jMenu1.add(alta);
+
+        listar.setText("Listado neumáticos");
+        listar.addActionListener(this::listarActionPerformed);
+        jMenu1.add(listar);
+
+        jMenuBar1.add(jMenu1);
+
+        jMenu2.setText("Facturación");
+        jMenuBar1.add(jMenu2);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGap(0, 700, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGap(0, 444, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void listarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_listarActionPerformed
+
+    private void altaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_altaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_altaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -63,9 +93,14 @@ public class Main extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new Main().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new Menu().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem alta;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem listar;
     // End of variables declaration//GEN-END:variables
 }
