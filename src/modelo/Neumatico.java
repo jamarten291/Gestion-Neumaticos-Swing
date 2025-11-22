@@ -23,7 +23,7 @@ public class Neumatico {
     }
     
     private Perfil stringToPerfil(String perfil) {
-        return switch (perfil) {
+        return switch (perfil.toUpperCase().trim()) {
             case "BAJO" -> Perfil.BAJO;
             case "MEDIO" -> Perfil.MEDIO;
             case "ALTO" -> Perfil.ALTO;

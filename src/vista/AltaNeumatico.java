@@ -177,37 +177,28 @@ public class AltaNeumatico extends javax.swing.JDialog {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         if (inputValido()) {
-            if (conn.conectar()) {
-                int codigo = Integer.parseInt(tfCodigo.getText());
-                int ancho = Integer.parseInt(tfAncho.getText());
-                double precio = Double.parseDouble(tfPrecio.getText());
-                Neumatico n = new Neumatico(
-                        codigo, 
-                        tfMarca.getText(), 
-                        tfModelo.getText(), 
-                        ancho, 
-                        cbPerfil.getSelectedItem().toString(), 
-                        precio
+            int codigo = Integer.parseInt(tfCodigo.getText());
+            int ancho = Integer.parseInt(tfAncho.getText());
+            double precio = Double.parseDouble(tfPrecio.getText());
+            Neumatico n = new Neumatico(
+                    codigo, 
+                    tfMarca.getText(), 
+                    tfModelo.getText(), 
+                    ancho, 
+                    cbPerfil.getSelectedItem().toString(), 
+                    precio
+            );
+            if (conn.altaNeumatico(n)) {
+                HelperClass.lanzarAlerta(
+                        "Información", 
+                        "Se ha agregado un neumático de forma exitosa a la base de datos", 
+                        JOptionPane.INFORMATION_MESSAGE, 
+                        this
                 );
-                if (conn.altaNeumatico(n)) {
-                    HelperClass.lanzarAlerta(
-                            "Información", 
-                            "Se ha agregado un neumático de forma exitosa a la base de datos", 
-                            JOptionPane.INFORMATION_MESSAGE, 
-                            this
-                    );
-                } else {
-                    HelperClass.lanzarAlerta(
-                            "Error", 
-                            "No se ha podido agregar el neumático debido a un error", 
-                            JOptionPane.ERROR_MESSAGE, 
-                            this
-                    );
-                }
             } else {
                 HelperClass.lanzarAlerta(
                         "Error", 
-                        "No se ha podido conectar a la base de datos debido a un error", 
+                        "No se ha podido agregar el neumático debido a un error", 
                         JOptionPane.ERROR_MESSAGE, 
                         this
                 );

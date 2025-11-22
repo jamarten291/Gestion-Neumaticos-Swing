@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import modelo.Neumatico;
 
 /**
@@ -13,16 +15,26 @@ import modelo.Neumatico;
  * @author jamarten291
  */
 public class Conector {
-    private final String DATABASE = "neumaticos";
-    private final String URL = "jdbc:mysql://localhost/";
-    private final String DRIVER = "com.mysql.cj.jdbc.Driver";
-    private final String LOGIN = "root";
-    private final String PASSWORD = "";
+    private static final String DATABASE = "neumaticos";
+    private static final String URL = "jdbc:mysql://localhost/";
+    private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
+    private static final String LOGIN = "root";
+    private static final String PASSWORD = "";
     
     private Connection conn;
 
     public Conector() {
 
+    }
+    
+    public static Connection getConnection() {
+        try {
+            Class.forName(DRIVER);
+            return DriverManager.getConnection(URL + DATABASE, LOGIN, PASSWORD);
+        } catch (ClassNotFoundException | SQLException ex) {
+            System.getLogger(Conector.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+        return null;
     }
     
     public boolean conectar() {
@@ -41,19 +53,35 @@ public class Conector {
         
         String query = "SELECT * FROM acceso "
                      + "WHERE nombre = ? AND password = ?";
-        PreparedStatement ps;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
         try {
+            conn = getConnection();
             ps = conn.prepareStatement(query);
             ps.setString(1, nombre);
             ps.setString(2, password);
             
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
             
             if (rs.next()) {
                 flag = true;
             }
         } catch (SQLException ex) {
             System.getLogger(Conector.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                System.getLogger(Conector.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            }
         }
         
         return flag;
@@ -63,14 +91,28 @@ public class Conector {
         boolean flag = false;
         
         String query = "INSERT INTO acceso (nombre, password) VALUES (?, ?)";
+        PreparedStatement ps = null;
+        
         try {
-            PreparedStatement ps = conn.prepareStatement(query);
+            conn = getConnection();
+            ps = conn.prepareStatement(query);
             ps.setString(1, nombre);
             ps.setString(2, password);
             ps.execute();
             flag = true;
         } catch (SQLException ex) {
             System.getLogger(Conector.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (SQLException ex) {
+                System.getLogger(Conector.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            }
         }
         
         return flag;
@@ -80,8 +122,9 @@ public class Conector {
         boolean flag = false;
         
         String query = "INSERT INTO neumatico VALUES (?, ?, ?, ?, ?, ?)";
-        PreparedStatement ps;
+        PreparedStatement ps = null;
         try {
+            conn = getConnection();
             ps = conn.prepareStatement(query);
             ps.setInt(1, n.getCodigo());
             ps.setString(2, n.getMarca());
@@ -93,8 +136,61 @@ public class Conector {
             flag = true;
         } catch (SQLException ex) {
             System.getLogger(Conector.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (SQLException ex) {
+                System.getLogger(Conector.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            }
         }
         
         return flag;
+    }
+    
+    public List<Neumatico> listarNeumaticos() {
+        List<Neumatico> listaNeumaticos = new ArrayList<>();
+        
+        String query = "SELECT * FROM neumatico";
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            conn = getConnection();
+            ps = conn.prepareStatement(query);
+            rs = ps.executeQuery();
+            
+            while (rs.next()) {
+                Neumatico n = new Neumatico(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getInt(4),
+                        rs.getString(5),
+                        rs.getDouble(6)
+                );
+                listaNeumaticos.add(n);
+            }
+        } catch (SQLException ex) {
+            System.getLogger(Conector.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                System.getLogger(Conector.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            }
+        }
+        return listaNeumaticos;
     }
 }

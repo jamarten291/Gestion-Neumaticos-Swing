@@ -11,7 +11,7 @@ import javax.swing.JOptionPane;
  */
 public class Login extends javax.swing.JFrame {
     
-    Conector bbdd;
+    private Conector bbdd;
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Login.class.getName());
 
@@ -137,22 +137,13 @@ public class Login extends javax.swing.JFrame {
 
     private void btnAccederActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAccederActionPerformed
         if (inputValido()) {
-            if (bbdd.conectar()) {
-                if (bbdd.inicioSesion(tfNombre.getText(), tfPasswd.getText())) {
-                    new Menu().setVisible(true);
-                    dispose();
-                } else {
-                    HelperClass.lanzarAlerta(
-                            "Error", 
-                            "El usuario o la contraseña introducidos no son correctos", 
-                            JOptionPane.ERROR_MESSAGE, this
-                    );
-                    limpiarTextos();
-                }
+            if (bbdd.inicioSesion(tfNombre.getText(), tfPasswd.getText())) {
+                new Menu().setVisible(true);
+                dispose();
             } else {
                 HelperClass.lanzarAlerta(
                         "Error", 
-                        "Ha ocurrido un error al registrar el usuario, inténtalo de nuevo", 
+                        "El usuario o la contraseña introducidos no son correctos", 
                         JOptionPane.ERROR_MESSAGE, this
                 );
                 limpiarTextos();
@@ -168,7 +159,7 @@ public class Login extends javax.swing.JFrame {
 
     private void btnRegistrarseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarseActionPerformed
         if (inputValido()) {
-            if (bbdd.conectar() && bbdd.registrarUsuario(tfNombre.getText(), tfPasswd.getText())) {
+            if (bbdd.registrarUsuario(tfNombre.getText(), tfPasswd.getText())) {
                 HelperClass.lanzarAlerta(
                         "Información", 
                         "Se ha registrado un usuario en la base de datos", 

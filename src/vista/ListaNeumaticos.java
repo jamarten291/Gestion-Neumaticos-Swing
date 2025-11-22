@@ -1,10 +1,22 @@
 package vista;
 
+import controlador.Conector;
+import controlador.HelperClass;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+import modelo.Neumatico;
+
 /**
  *
  * @author jacksonmh16
  */
 public class ListaNeumaticos extends javax.swing.JDialog {
+    
+    private Conector conn;
+    private List<Neumatico> listaNeumaticos;
+    private DefaultTableModel tableModel;
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ListaNeumaticos.class.getName());
 
@@ -14,6 +26,44 @@ public class ListaNeumaticos extends javax.swing.JDialog {
     public ListaNeumaticos(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        conn = new Conector();
+        tableModel = (DefaultTableModel) tableNeumaticos.getModel();
+        actualizarTabla();
+    }
+    
+    private void actualizarTabla() {
+        tableModel.setRowCount(0);
+        listaNeumaticos = conn.listarNeumaticos();
+        
+        for (Neumatico n : listaNeumaticos) {
+            Object[] data = {
+                n.getCodigo(),
+                n.getMarca(),
+                n.getModelo(),
+                n.getAncho(),
+                n.getPerfilStr(),
+                n.getPrecio()
+            };
+            tableModel.addRow(data);
+        }
+    }
+    
+    private boolean inputValido() {
+        boolean flag = true;
+        
+        JTextField[] tfList = { tfCodigo, tfMarca, tfModelo, tfAncho, tfPrecio };
+        
+        for (JTextField tf : tfList) {
+            if (tf.getText().isEmpty()) flag = false;
+        }
+        
+        if (!HelperClass.tryParseToInt(tfCodigo.getText()) || 
+                !HelperClass.tryParseToInt(tfAncho.getText()) ||
+                !HelperClass.tryParseToDouble(tfPrecio.getText())) {
+            flag = false;
+        }
+        
+        return flag;
     }
 
     /**
@@ -25,21 +75,218 @@ public class ListaNeumaticos extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        tfAncho = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        tfPrecio = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        cbPerfil = new javax.swing.JComboBox<>();
+        tfCodigo = new javax.swing.JTextField();
+        btnActualizar = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        btnBorrar = new javax.swing.JButton();
+        tfMarca = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        tfModelo = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tableNeumaticos = new javax.swing.JTable();
+        btnSalir = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        jLabel6.setText("Perfil");
+
+        jLabel7.setText("Precio");
+
+        jLabel1.setFont(new java.awt.Font("Noto Sans", 1, 24)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(0, 0, 153));
+        jLabel1.setText("LISTADO NEUMÁTICOS");
+
+        jLabel2.setText("Código");
+
+        cbPerfil.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "BAJO", "MEDIO", "ALTO" }));
+
+        btnActualizar.setFont(new java.awt.Font("Noto Sans", 1, 20)); // NOI18N
+        btnActualizar.setForeground(new java.awt.Color(0, 204, 0));
+        btnActualizar.setText("ACTUALIZAR");
+        btnActualizar.addActionListener(this::btnActualizarActionPerformed);
+
+        jLabel3.setText("Marca");
+
+        btnBorrar.setFont(new java.awt.Font("Noto Sans", 1, 20)); // NOI18N
+        btnBorrar.setForeground(new java.awt.Color(204, 0, 0));
+        btnBorrar.setText("BORRAR");
+        btnBorrar.addActionListener(this::btnBorrarActionPerformed);
+
+        jLabel4.setText("Modelo");
+
+        jLabel5.setText("Ancho");
+
+        tableNeumaticos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Código", "Marca", "Modelo", "Ancho", "Perfil", "Precio"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.Double.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        tableNeumaticos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableNeumaticosMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tableNeumaticos);
+
+        btnSalir.setFont(new java.awt.Font("Noto Sans", 1, 20)); // NOI18N
+        btnSalir.setForeground(new java.awt.Color(204, 0, 0));
+        btnSalir.setText("SALIR");
+        btnSalir.addActionListener(this::btnSalirActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 726, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(405, 405, 405))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(82, 82, 82)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnActualizar)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnBorrar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnSalir))
+                    .addComponent(jScrollPane1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(56, 56, 56)
+                                .addComponent(tfMarca, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addGap(56, 56, 56)
+                                .addComponent(tfCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addGap(56, 56, 56)
+                                .addComponent(tfModelo, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 395, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addGap(56, 56, 56)
+                                .addComponent(tfAncho, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING))
+                                .addGap(56, 56, 56)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(cbPerfil, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(tfPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                .addGap(91, 91, 91))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 490, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(38, 38, 38)
+                .addComponent(jLabel1)
+                .addGap(46, 46, 46)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(tfCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5)
+                    .addComponent(tfAncho, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(tfMarca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6)
+                    .addComponent(cbPerfil, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(tfModelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7)
+                    .addComponent(tfPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnActualizar)
+                    .addComponent(btnBorrar)
+                    .addComponent(btnSalir))
+                .addGap(35, 35, 35))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
+        if (inputValido()) {
+            int codigo = Integer.parseInt(tfCodigo.getText());
+            int ancho = Integer.parseInt(tfAncho.getText());
+            double precio = Double.parseDouble(tfPrecio.getText());
+            Neumatico n = new Neumatico(
+                codigo,
+                tfMarca.getText(),
+                tfModelo.getText(),
+                ancho,
+                cbPerfil.getSelectedItem().toString(),
+                precio
+            );
+            if (conn.altaNeumatico(n)) {
+                HelperClass.lanzarAlerta(
+                    "Información",
+                    "Se ha agregado un neumático de forma exitosa a la base de datos",
+                    JOptionPane.INFORMATION_MESSAGE,
+                    this
+                );
+            } else {
+                HelperClass.lanzarAlerta(
+                    "Error",
+                    "No se ha podido agregar el neumático debido a un error",
+                    JOptionPane.ERROR_MESSAGE,
+                    this
+                );
+            }
+        }
+    }//GEN-LAST:event_btnActualizarActionPerformed
+
+    private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
+        
+    }//GEN-LAST:event_btnBorrarActionPerformed
+
+    private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
+        dispose();
+    }//GEN-LAST:event_btnSalirActionPerformed
+
+    private void tableNeumaticosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableNeumaticosMouseClicked
+        int row = tableNeumaticos.rowAtPoint(evt.getPoint());
+        
+        JTextField[] tfList = { tfCodigo, tfMarca, tfModelo, tfAncho };
+        
+        for (int i = 0; i < tfList.length; i++) {
+            tfList[i].setText(tableNeumaticos.getValueAt(row, i).toString());
+        }
+        
+        cbPerfil.setSelectedItem(tableModel.getValueAt(row, 4).toString());
+        tfPrecio.setText(tableNeumaticos.getValueAt(row, 5).toString());
+    }//GEN-LAST:event_tableNeumaticosMouseClicked
 
     /**
      * @param args the command line arguments
@@ -79,5 +326,23 @@ public class ListaNeumaticos extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnActualizar;
+    private javax.swing.JButton btnBorrar;
+    private javax.swing.JButton btnSalir;
+    private javax.swing.JComboBox<String> cbPerfil;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tableNeumaticos;
+    private javax.swing.JTextField tfAncho;
+    private javax.swing.JTextField tfCodigo;
+    private javax.swing.JTextField tfMarca;
+    private javax.swing.JTextField tfModelo;
+    private javax.swing.JTextField tfPrecio;
     // End of variables declaration//GEN-END:variables
 }
