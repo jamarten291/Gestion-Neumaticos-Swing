@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import modelo.Neumatico;
 
 /**
  *
@@ -61,12 +62,33 @@ public class Conector {
     public boolean registrarUsuario(String nombre, String password) {
         boolean flag = false;
         
-        String query = "INSERT INTO acceso (nombre, password) "
-                     + "VALUES (?, ?)";
+        String query = "INSERT INTO acceso (nombre, password) VALUES (?, ?)";
         try {
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setString(1, nombre);
             ps.setString(2, password);
+            ps.execute();
+            flag = true;
+        } catch (SQLException ex) {
+            System.getLogger(Conector.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+        
+        return flag;
+    }
+    
+    public boolean altaNeumatico(Neumatico n) {
+        boolean flag = false;
+        
+        String query = "INSERT INTO neumatico VALUES (?, ?, ?, ?, ?, ?)";
+        PreparedStatement ps;
+        try {
+            ps = conn.prepareStatement(query);
+            ps.setInt(1, n.getCodigo());
+            ps.setString(2, n.getMarca());
+            ps.setString(3, n.getModelo());
+            ps.setInt(4, n.getAncho());
+            ps.setString(5, n.getPerfilStr());
+            ps.setDouble(6, n.getPrecio());
             ps.execute();
             flag = true;
         } catch (SQLException ex) {

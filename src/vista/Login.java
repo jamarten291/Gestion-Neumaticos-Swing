@@ -2,6 +2,7 @@
 package vista;
 
 import controlador.Conector;
+import controlador.HelperClass;
 import javax.swing.JOptionPane;
 
 /**
@@ -24,15 +25,6 @@ public class Login extends javax.swing.JFrame {
     
     private boolean inputValido() {
         return !tfNombre.getText().isEmpty() && !tfPasswd.getText().isEmpty();
-    }
-    
-    private void lanzarAlerta(String titulo, String mensaje, int tipo) {
-        JOptionPane.showMessageDialog(
-                this, 
-                mensaje, 
-                titulo, 
-                tipo
-        );
     }
     
     private void limpiarTextos() {
@@ -150,26 +142,26 @@ public class Login extends javax.swing.JFrame {
                     new Menu().setVisible(true);
                     dispose();
                 } else {
-                    lanzarAlerta(
+                    HelperClass.lanzarAlerta(
                             "Error", 
                             "El usuario o la contraseña introducidos no son correctos", 
-                            JOptionPane.ERROR_MESSAGE
+                            JOptionPane.ERROR_MESSAGE, this
                     );
                     limpiarTextos();
                 }
             } else {
-                lanzarAlerta(
+                HelperClass.lanzarAlerta(
                         "Error", 
                         "Ha ocurrido un error al registrar el usuario, inténtalo de nuevo", 
-                        JOptionPane.ERROR_MESSAGE
+                        JOptionPane.ERROR_MESSAGE, this
                 );
                 limpiarTextos();
             }
         } else {
-            lanzarAlerta(
+            HelperClass.lanzarAlerta(
                     "Error", 
                     "Debes rellenar ambos campos", 
-                    JOptionPane.ERROR_MESSAGE
+                    JOptionPane.ERROR_MESSAGE, this
             );
         }
     }//GEN-LAST:event_btnAccederActionPerformed
@@ -177,25 +169,25 @@ public class Login extends javax.swing.JFrame {
     private void btnRegistrarseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarseActionPerformed
         if (inputValido()) {
             if (bbdd.conectar() && bbdd.registrarUsuario(tfNombre.getText(), tfPasswd.getText())) {
-                lanzarAlerta(
+                HelperClass.lanzarAlerta(
                         "Información", 
                         "Se ha registrado un usuario en la base de datos", 
-                        JOptionPane.INFORMATION_MESSAGE
+                        JOptionPane.INFORMATION_MESSAGE, this
                 );
                 limpiarTextos();
             } else {
-                lanzarAlerta(
+                HelperClass.lanzarAlerta(
                         "Error", 
                         "Ha ocurrido un error al registrar el usuario, inténtalo de nuevo", 
-                        JOptionPane.ERROR_MESSAGE
+                        JOptionPane.ERROR_MESSAGE, this
                 );
                 limpiarTextos();
             }
         } else {
-            lanzarAlerta(
+            HelperClass.lanzarAlerta(
                     "Error", 
                     "Debes rellenar ambos campos", 
-                    JOptionPane.ERROR_MESSAGE
+                    JOptionPane.ERROR_MESSAGE, this
             );
         }
     }//GEN-LAST:event_btnRegistrarseActionPerformed
