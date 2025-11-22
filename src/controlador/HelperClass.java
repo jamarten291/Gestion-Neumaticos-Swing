@@ -5,7 +5,6 @@ import java.awt.Component;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import javax.swing.JOptionPane;
-import vista.Login;
 
 /**
  * @author jamarten291
