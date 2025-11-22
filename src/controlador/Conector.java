@@ -98,8 +98,11 @@ public class Conector {
             ps = conn.prepareStatement(query);
             ps.setString(1, nombre);
             ps.setString(2, password);
-            ps.execute();
-            flag = true;
+            int filas = ps.executeUpdate();
+            
+            if (filas > 0) {
+                flag = true;
+            }
         } catch (SQLException ex) {
             System.getLogger(Conector.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         } finally {
@@ -132,8 +135,11 @@ public class Conector {
             ps.setInt(4, n.getAncho());
             ps.setString(5, n.getPerfilStr());
             ps.setDouble(6, n.getPrecio());
-            ps.execute();
-            flag = true;
+            int filas = ps.executeUpdate();
+            
+            if (filas > 0) {
+                flag = true;
+            }
         } catch (SQLException ex) {
             System.getLogger(Conector.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         } finally {
@@ -211,8 +217,11 @@ public class Conector {
             ps.setString(4, n.getPerfilStr());
             ps.setDouble(5, n.getPrecio());
             ps.setInt(6, n.getCodigo());
-            ps.execute();
-            flag = true;
+            int filas = ps.executeUpdate();
+            
+            if (filas > 0) {
+                flag = true;
+            }
         } catch (SQLException ex) {
             System.getLogger(Conector.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         } finally {
@@ -228,6 +237,38 @@ public class Conector {
             }
         }
         
+        return flag;
+    }
+    
+    public boolean borrarNeumatico(int cod) {
+        boolean flag = false;
+        
+        String query = "DELETE FROM neumatico "
+                    + "WHERE cod=?";
+        PreparedStatement ps = null;
+        try {
+            conn = getConnection();
+            ps = conn.prepareStatement(query);
+            ps.setInt(1, cod);
+            int filas = ps.executeUpdate();
+            
+            if (filas > 0) {
+                flag = true;
+            }
+        } catch (SQLException ex) {
+            System.getLogger(Conector.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (SQLException ex) {
+                System.getLogger(Conector.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            }
+        }
         return flag;
     }
 }

@@ -265,11 +265,44 @@ public class ListaNeumaticos extends javax.swing.JDialog {
                     this
                 );
             }
+        } else {
+            HelperClass.lanzarAlerta(
+                    "Error", 
+                    "Primero debes rellenar todos los campos", 
+                    JOptionPane.ERROR_MESSAGE, 
+                    this
+            );
         }
     }//GEN-LAST:event_btnActualizarActionPerformed
 
     private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
-        
+        if (!tfCodigo.getText().isEmpty() && 
+                HelperClass.tryParseToInt(tfCodigo.getText())) {
+            int codigo = Integer.parseInt(tfCodigo.getText());
+            if (conn.borrarNeumatico(codigo)) {
+                actualizarTabla();
+                HelperClass.lanzarAlerta(
+                    "Información",
+                    "Se ha eliminado el neumático de forma exitosa",
+                    JOptionPane.INFORMATION_MESSAGE,
+                    this
+                );
+            } else {
+                HelperClass.lanzarAlerta(
+                    "Error",
+                    "No se ha podido eliminar el neumático debido a un error",
+                    JOptionPane.ERROR_MESSAGE,
+                    this
+                );
+            }
+        } else {
+            HelperClass.lanzarAlerta(
+                    "Error", 
+                    "Primero debes rellenar todos los campos", 
+                    JOptionPane.ERROR_MESSAGE, 
+                    this
+            );
+        }
     }//GEN-LAST:event_btnBorrarActionPerformed
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
