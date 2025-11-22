@@ -2,6 +2,8 @@
 package controlador;
 
 import java.awt.Component;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import javax.swing.JOptionPane;
 import vista.Login;
 
@@ -31,6 +33,15 @@ public class HelperClass {
         } catch (NumberFormatException ex) {
             return false;
         }
+    }
+    
+    public static String dateToString(LocalDate date) {
+        String fecha;
+        // El campo en el que se introduce la cadena debe ser tipo varchar(10)
+        SimpleDateFormat formatPattern = new SimpleDateFormat("dd-MM-yyyy");
+        fecha = formatPattern.format(date);
+        
+        return fecha;
     }
     
 }
