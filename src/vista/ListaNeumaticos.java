@@ -276,10 +276,19 @@ public class ListaNeumaticos extends javax.swing.JDialog {
     }//GEN-LAST:event_btnActualizarActionPerformed
 
     private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
-        if (!tfCodigo.getText().isEmpty() && 
-                HelperClass.tryParseToInt(tfCodigo.getText())) {
+        if (inputValido()) {
             int codigo = Integer.parseInt(tfCodigo.getText());
-            if (conn.borrarNeumatico(codigo)) {
+            int ancho = Integer.parseInt(tfAncho.getText());
+            double precio = Double.parseDouble(tfPrecio.getText());
+            Neumatico n = new Neumatico(
+                codigo,
+                tfMarca.getText(),
+                tfModelo.getText(),
+                ancho,
+                cbPerfil.getSelectedItem().toString(),
+                precio
+            );
+            if (conn.borrarNeumatico(n)) {
                 actualizarTabla();
                 HelperClass.lanzarAlerta(
                     "Información",

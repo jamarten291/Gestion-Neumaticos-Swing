@@ -240,16 +240,22 @@ public class Conector {
         return flag;
     }
     
-    public boolean borrarNeumatico(int cod) {
+    public boolean borrarNeumatico(Neumatico n) {
         boolean flag = false;
         
         String query = "DELETE FROM neumatico "
-                    + "WHERE cod=?";
+                    + "WHERE cod=? AND marca=? AND modelo=? "
+                    + "AND ancho=? AND perfil=? AND precio=?";
         PreparedStatement ps = null;
         try {
             conn = getConnection();
             ps = conn.prepareStatement(query);
-            ps.setInt(1, cod);
+            ps.setInt(1, n.getCodigo());
+            ps.setString(2, n.getMarca());
+            ps.setString(3, n.getModelo());
+            ps.setInt(4, n.getAncho());
+            ps.setString(5, n.getPerfilStr());
+            ps.setDouble(6, n.getPrecio());
             int filas = ps.executeUpdate();
             
             if (filas > 0) {
