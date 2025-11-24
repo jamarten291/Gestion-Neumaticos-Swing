@@ -69,9 +69,9 @@ public class Neumatico {
     
     public String getPerfilStr() {
         return switch (this.getPerfil()) {
-            case Perfil.ALTO -> "ALTO";
-            case Perfil.MEDIO -> "MEDIO";
-            case Perfil.BAJO -> "BAJO";
+            case ALTO -> "ALTO";
+            case MEDIO -> "MEDIO";
+            case BAJO -> "BAJO";
             default -> null;
         };
     }
