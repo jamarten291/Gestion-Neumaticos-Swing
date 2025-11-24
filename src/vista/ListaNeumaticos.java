@@ -14,9 +14,9 @@ import modelo.Neumatico;
  */
 public class ListaNeumaticos extends javax.swing.JDialog {
     
-    private Conector conn;
+    private final Conector conn;
     private List<Neumatico> listaNeumaticos;
-    private DefaultTableModel tableModel;
+    private final DefaultTableModel tableModel;
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ListaNeumaticos.class.getName());
 
@@ -28,6 +28,7 @@ public class ListaNeumaticos extends javax.swing.JDialog {
         initComponents();
         conn = new Conector();
         tableModel = (DefaultTableModel) tableNeumaticos.getModel();
+        tfCodigo.setEditable(false);
         actualizarTabla();
     }
     

@@ -8,6 +8,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import modelo.Cliente;
 import modelo.Neumatico;
 
 /**
@@ -198,6 +199,51 @@ public class Conector {
             }
         }
         return listaNeumaticos;
+    }
+    
+    public List<Cliente> listarClientes() {
+        List<Cliente> listaClientes = new ArrayList<>();
+        
+        String query = "SELECT * FROM cliente";
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            conn = getConnection();
+            ps = conn.prepareStatement(query);
+            rs = ps.executeQuery();
+            
+            while (rs.next()) {
+                Cliente c = new Cliente(
+                        rs.getString(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getInt(4),
+                        rs.getInt(5),
+                        rs.getString(6),
+                        rs.getString(7),
+                        rs.getString(8),
+                        rs.getString(9)
+                );
+                listaClientes.add(c);
+            }
+        } catch (SQLException ex) {
+            System.getLogger(Conector.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                System.getLogger(Conector.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            }
+        }
+        return listaClientes;
     }
     
     public boolean actualizarNeumatico(Neumatico n) {
