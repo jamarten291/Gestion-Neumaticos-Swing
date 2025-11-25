@@ -5,8 +5,12 @@
 package vista;
 
 import controlador.Conector;
+import controlador.HelperClass;
 import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import modelo.Cliente;
+import modelo.Factura;
 import modelo.Neumatico;
 
 /**
@@ -40,6 +44,34 @@ public class ListaFacturas extends javax.swing.JDialog {
         }
     }
 
+    private boolean inputValido() {
+        boolean flag = true;
+        
+        JTextField[] tfList = { 
+            tfNumFactura, 
+            tfFechaActual,
+            tfMarca,
+            tfPrecio,
+            tfUnidades,
+            tfNifEmisor,
+            tfAnio,
+            tfIva
+        };
+        
+        for (JTextField tf : tfList) {
+            if (tf.getText().isEmpty()) flag = false;
+        }
+        
+        if (!HelperClass.tryParseToInt(tfNumFactura.getText()) || 
+                !HelperClass.tryParseToDouble(tfIva.getText()) ||
+                !HelperClass.tryParseToDouble(tfPrecio.getText()) ||
+                !HelperClass.tryParseToInt(tfUnidades.getText())) {
+            flag = false;
+        }
+        
+        return flag;
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -277,6 +309,11 @@ public class ListaFacturas extends javax.swing.JDialog {
         btnCancelar.setFont(new java.awt.Font("Noto Sans", 1, 20)); // NOI18N
         btnCancelar.setForeground(new java.awt.Color(204, 0, 0));
         btnCancelar.setText("CANCELAR");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
 
         jLabel13.setFont(new java.awt.Font("Noto Sans", 1, 20)); // NOI18N
         jLabel13.setText("SUBTOTAL");
@@ -366,8 +403,49 @@ public class ListaFacturas extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        // TODO add your handling code here:
+        // TODO arreglar error de tamaños de varchar
+        if (inputValido()) {
+            double base = Double.parseDouble(lblSubtotal.getText());
+            double iva = Double.parseDouble(lblIva.getText());
+            double total = Double.parseDouble(lblTotal.getText());
+            Factura f = new Factura(
+                    cbNifCliente.getSelectedItem().toString(),
+                    tfNifEmisor.getText(),
+                    tfFechaActual.toString(),
+                    base,
+                    iva,
+                    total,
+                    false,
+                    tfNumFactura.toString()
+            );
+            if (conn.guardarFactura(f)) {
+                HelperClass.lanzarAlerta(
+                        "Información", 
+                        "Se ha agregado una factura de forma exitosa a la base de datos", 
+                        JOptionPane.INFORMATION_MESSAGE, 
+                        this
+                );
+            } else {
+                HelperClass.lanzarAlerta(
+                        "Error", 
+                        "No se ha podido agregar la factura debido a un error", 
+                        JOptionPane.ERROR_MESSAGE, 
+                        this
+                );
+            }
+        } else {
+            HelperClass.lanzarAlerta(
+                    "Error", 
+                    "Primero debes rellenar todos los campos", 
+                    JOptionPane.ERROR_MESSAGE, 
+                    this
+            );
+        }
     }//GEN-LAST:event_btnGuardarActionPerformed
+
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        dispose();
+    }//GEN-LAST:event_btnCancelarActionPerformed
 
     /**
      * @param args the command line arguments

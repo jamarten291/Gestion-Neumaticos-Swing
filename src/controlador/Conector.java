@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import modelo.Cliente;
+import modelo.Factura;
 import modelo.Neumatico;
 
 /**
@@ -321,6 +322,47 @@ public class Conector {
                 System.getLogger(Conector.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
             }
         }
+        return flag;
+    }
+    
+    public boolean guardarFactura(Factura f) {
+        boolean flag = false;
+        
+        String query = "INSERT INTO factura (nifcliente, nifemisor, fechasistema, base, iva, total, pagada, numcuenta) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        PreparedStatement ps = null;
+        try {
+            conn = getConnection();
+            ps = conn.prepareStatement(query);
+            ps.setString(1, f.getNifCliente());
+            ps.setString(2, f.getNifEmisor());
+            ps.setString(3, f.getFechaSistema());
+            ps.setDouble(4, f.getBase());
+            ps.setDouble(5, f.getIva());
+            ps.setDouble(6, f.getTotal());
+            ps.setBoolean(7, f.isPagada());
+            ps.setString(8, f.getNumCuenta());
+            
+            int filas = ps.executeUpdate();
+            
+            if (filas > 0) {
+                flag = true;
+            }
+        } catch (SQLException ex) {
+            System.getLogger(Conector.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (SQLException ex) {
+                System.getLogger(Conector.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            }
+        }
+        
         return flag;
     }
 }
