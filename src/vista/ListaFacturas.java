@@ -9,6 +9,7 @@ import controlador.HelperClass;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 import modelo.Cliente;
 import modelo.Factura;
 import modelo.Neumatico;
@@ -20,6 +21,7 @@ import modelo.Neumatico;
 public class ListaFacturas extends javax.swing.JDialog {
 
     private Conector conn;
+    private DefaultTableModel tableModel;
     
     /**
      * Creates new form ListaFacturas
@@ -29,6 +31,7 @@ public class ListaFacturas extends javax.swing.JDialog {
         conn = new Conector();
         initComponents();
         initComboBoxes();
+        tableModel = (DefaultTableModel) tableFacturas.getModel();
     }
     
     private void initComboBoxes() {
@@ -106,6 +109,8 @@ public class ListaFacturas extends javax.swing.JDialog {
         tfIva = new javax.swing.JTextField();
         btnBorrar = new javax.swing.JButton();
         btnAgregar = new javax.swing.JButton();
+        tfConcepto = new javax.swing.JTextField();
+        jLabel12 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableFacturas = new javax.swing.JTable();
@@ -172,10 +177,22 @@ public class ListaFacturas extends javax.swing.JDialog {
         btnBorrar.setFont(new java.awt.Font("Noto Sans", 1, 20)); // NOI18N
         btnBorrar.setForeground(new java.awt.Color(204, 0, 0));
         btnBorrar.setText("ELIMINAR LÍNEA");
+        btnBorrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBorrarActionPerformed(evt);
+            }
+        });
 
         btnAgregar.setFont(new java.awt.Font("Noto Sans", 1, 20)); // NOI18N
         btnAgregar.setForeground(new java.awt.Color(0, 204, 0));
         btnAgregar.setText("AÑADIR LÍNEA");
+        btnAgregar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarActionPerformed(evt);
+            }
+        });
+
+        jLabel12.setText("Concepto");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -208,9 +225,11 @@ public class ListaFacturas extends javax.swing.JDialog {
                                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(jLabel11)
                                         .addComponent(jLabel9)
-                                        .addComponent(jLabel10))
+                                        .addComponent(jLabel10)
+                                        .addComponent(jLabel12))
                                     .addGap(30, 30, 30)
                                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(tfConcepto, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(tfNifEmisor, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(tfIva, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(tfAnio, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
@@ -248,7 +267,10 @@ public class ListaFacturas extends javax.swing.JDialog {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
-                    .addComponent(tfPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tfPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel12)
+                        .addComponent(tfConcepto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
@@ -447,6 +469,34 @@ public class ListaFacturas extends javax.swing.JDialog {
         dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
+    private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+        if (inputValido()) {
+            int codNeumatico = Integer.parseInt(cbCodNeumatico.getSelectedItem().toString());
+            String concepto = tfConcepto.getText();
+            int cantidad = Integer.parseInt(tfUnidades.getText());
+            double precio = Double.parseDouble(tfPrecio.getText());
+            
+            Object[] data = { codNeumatico, concepto, cantidad, precio };
+            
+            tableModel.addRow(data);
+        }
+    }//GEN-LAST:event_btnAgregarActionPerformed
+
+    private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
+        int index = tableFacturas.getSelectedRow();
+        
+        if (index != -1) {
+            
+        } else {
+            HelperClass.lanzarAlerta(
+                    "Alerta", 
+                    "Debes seleccionar la fila que deseas eliminar en la tabla", 
+                    JOptionPane.WARNING_MESSAGE, 
+                    this
+            );
+        }
+    }//GEN-LAST:event_btnBorrarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -499,6 +549,7 @@ public class ListaFacturas extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
@@ -519,6 +570,7 @@ public class ListaFacturas extends javax.swing.JDialog {
     private javax.swing.JLabel lblTotal;
     private javax.swing.JTable tableFacturas;
     private javax.swing.JTextField tfAnio;
+    private javax.swing.JTextField tfConcepto;
     private javax.swing.JTextField tfFechaActual;
     private javax.swing.JTextField tfIva;
     private javax.swing.JTextField tfMarca;
