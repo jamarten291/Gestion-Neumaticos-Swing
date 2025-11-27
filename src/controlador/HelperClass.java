@@ -4,6 +4,9 @@ package controlador;
 import java.awt.Component;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 
 /**
@@ -37,10 +40,17 @@ public class HelperClass {
     public static String dateToString(LocalDate date) {
         String fecha;
         // El campo en el que se introduce la cadena debe ser tipo varchar(10)
-        SimpleDateFormat formatPattern = new SimpleDateFormat("dd-MM-yyyy");
-        fecha = formatPattern.format(date);
+        DateTimeFormatter formatPattern = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        fecha = date.format(formatPattern);
         
         return fecha;
+    }
+    
+    public static boolean matchesRegex(String input, String regex) {
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(input);
+        
+        return m.matches();
     }
     
 }

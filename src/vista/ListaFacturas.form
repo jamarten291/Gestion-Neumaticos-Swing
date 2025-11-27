@@ -201,7 +201,7 @@
                                   <Group type="102" attributes="0">
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Component id="tfMarca" alignment="0" min="-2" pref="125" max="-2" attributes="0"/>
-                                          <Component id="tfNumFactura" alignment="0" min="-2" pref="125" max="-2" attributes="0"/>
+                                          <Component id="tfNumCuenta" alignment="0" min="-2" pref="125" max="-2" attributes="0"/>
                                           <Component id="tfFechaActual" alignment="0" min="-2" pref="125" max="-2" attributes="0"/>
                                       </Group>
                                       <EmptySpace min="-2" pref="47" max="-2" attributes="0"/>
@@ -214,9 +214,9 @@
                                       <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Component id="tfConcepto" min="-2" pref="125" max="-2" attributes="0"/>
-                                          <Component id="tfNifEmisor" min="-2" pref="125" max="-2" attributes="0"/>
                                           <Component id="tfIva" min="-2" pref="125" max="-2" attributes="0"/>
                                           <Component id="tfAnio" min="-2" pref="125" max="-2" attributes="0"/>
+                                          <Component id="cbNifEmisor" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                               </Group>
@@ -238,9 +238,9 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="tfNumFactura" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="tfNumCuenta" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel10" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="tfNifEmisor" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="cbNifEmisor" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
@@ -303,7 +303,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel4">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Num factura"/>
+            <Property name="text" type="java.lang.String" value="Num cuenta"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel5">
@@ -331,9 +331,12 @@
             <Property name="text" type="java.lang.String" value="% IVA"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="tfNumFactura">
+        <Component class="javax.swing.JTextField" name="tfNumCuenta">
         </Component>
         <Component class="javax.swing.JTextField" name="tfFechaActual">
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tfFechaActualActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="tfMarca">
         </Component>
@@ -352,8 +355,6 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="tfAnio">
-        </Component>
-        <Component class="javax.swing.JTextField" name="tfNifEmisor">
         </Component>
         <Component class="javax.swing.JTextField" name="tfIva">
         </Component>
@@ -391,6 +392,16 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Concepto"/>
           </Properties>
+        </Component>
+        <Component class="javax.swing.JComboBox" name="cbNifEmisor">
+          <Properties>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+              <StringArray count="0"/>
+            </Property>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+          </AuxValues>
         </Component>
       </SubComponents>
     </Container>

@@ -6,6 +6,7 @@ package vista;
 
 import controlador.Conector;
 import controlador.HelperClass;
+import java.time.LocalDate;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -22,6 +23,12 @@ public class ListaFacturas extends javax.swing.JDialog {
 
     private Conector conn;
     private DefaultTableModel tableModel;
+    private double subtotal;
+    private double calculoIva;
+    private double sumaIva;
+    private double total;
+    
+    private final LocalDate fechaActual;
     
     /**
      * Creates new form ListaFacturas
@@ -32,6 +39,15 @@ public class ListaFacturas extends javax.swing.JDialog {
         initComponents();
         initComboBoxes();
         tableModel = (DefaultTableModel) tableFacturas.getModel();
+        fechaActual = LocalDate.now();
+        displayActualDate();
+    }
+    
+    private void displayActualDate() {
+        tfAnio.setText(Integer.toString(fechaActual.getYear()));
+        tfFechaActual.setText(HelperClass.dateToString(fechaActual));
+        tfAnio.setEditable(false);
+        tfFechaActual.setEditable(false);
     }
     
     private void initComboBoxes() {
@@ -40,6 +56,7 @@ public class ListaFacturas extends javax.swing.JDialog {
         
         for (Cliente c : listaClientes) {
             cbNifCliente.addItem(c.getNif());
+            cbNifEmisor.addItem(c.getNif());
         }
         
         for (Neumatico n : listaNeumaticos) {
@@ -51,12 +68,11 @@ public class ListaFacturas extends javax.swing.JDialog {
         boolean flag = true;
         
         JTextField[] tfList = { 
-            tfNumFactura, 
+            tfNumCuenta, 
             tfFechaActual,
             tfMarca,
             tfPrecio,
             tfUnidades,
-            tfNifEmisor,
             tfAnio,
             tfIva
         };
@@ -65,14 +81,33 @@ public class ListaFacturas extends javax.swing.JDialog {
             if (tf.getText().isEmpty()) flag = false;
         }
         
-        if (!HelperClass.tryParseToInt(tfNumFactura.getText()) || 
-                !HelperClass.tryParseToDouble(tfIva.getText()) ||
+        if (!HelperClass.tryParseToDouble(tfIva.getText()) ||
                 !HelperClass.tryParseToDouble(tfPrecio.getText()) ||
                 !HelperClass.tryParseToInt(tfUnidades.getText())) {
             flag = false;
         }
         
+        String numCuentaRegexPattern = 
+                "^[A-Z]{2}[0-9]{2}(-[0-9]{4}){2}-[0-9]{2}-[0-9]{9}$";
+        
+        if (!HelperClass.matchesRegex(
+                tfNumCuenta.getText(), 
+                numCuentaRegexPattern)
+        ) {
+            flag = false;
+        }
+        
         return flag;
+    }
+    
+    private void actualizarLabels (double precio) {
+        subtotal += precio;
+        sumaIva = subtotal * calculoIva;
+        total = subtotal + sumaIva;
+        
+        lblSubtotal.setText(Double.toString(subtotal));
+        lblIva.setText(Double.toString(sumaIva));
+        lblTotal.setText(Double.toString(total));
     }
     
     /**
@@ -97,7 +132,7 @@ public class ListaFacturas extends javax.swing.JDialog {
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        tfNumFactura = new javax.swing.JTextField();
+        tfNumCuenta = new javax.swing.JTextField();
         tfFechaActual = new javax.swing.JTextField();
         tfMarca = new javax.swing.JTextField();
         tfPrecio = new javax.swing.JTextField();
@@ -105,12 +140,12 @@ public class ListaFacturas extends javax.swing.JDialog {
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         tfAnio = new javax.swing.JTextField();
-        tfNifEmisor = new javax.swing.JTextField();
         tfIva = new javax.swing.JTextField();
         btnBorrar = new javax.swing.JButton();
         btnAgregar = new javax.swing.JButton();
         tfConcepto = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
+        cbNifEmisor = new javax.swing.JComboBox<>();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableFacturas = new javax.swing.JTable();
@@ -158,7 +193,7 @@ public class ListaFacturas extends javax.swing.JDialog {
 
         jLabel3.setText("Cod neumático");
 
-        jLabel4.setText("Num factura");
+        jLabel4.setText("Num cuenta");
 
         jLabel5.setText("Fecha actual");
 
@@ -169,6 +204,12 @@ public class ListaFacturas extends javax.swing.JDialog {
         jLabel8.setText("UNIDADES");
 
         jLabel9.setText("% IVA");
+
+        tfFechaActual.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfFechaActualActionPerformed(evt);
+            }
+        });
 
         jLabel10.setText("NIF Emisor");
 
@@ -219,7 +260,7 @@ public class ListaFacturas extends javax.swing.JDialog {
                                 .addGroup(jPanel2Layout.createSequentialGroup()
                                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(tfMarca, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(tfNumFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(tfNumCuenta, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(tfFechaActual, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGap(47, 47, 47)
                                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -230,9 +271,9 @@ public class ListaFacturas extends javax.swing.JDialog {
                                     .addGap(30, 30, 30)
                                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(tfConcepto, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(tfNifEmisor, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(tfIva, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(tfAnio, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
+                                        .addComponent(tfAnio, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(cbNifEmisor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(55, Short.MAX_VALUE)
@@ -245,9 +286,9 @@ public class ListaFacturas extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(tfNumFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tfNumCuenta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel10)
-                    .addComponent(tfNifEmisor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cbNifEmisor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
@@ -428,17 +469,17 @@ public class ListaFacturas extends javax.swing.JDialog {
         // TODO arreglar error de tamaños de varchar
         if (inputValido()) {
             double base = Double.parseDouble(lblSubtotal.getText());
-            double iva = Double.parseDouble(lblIva.getText());
-            double total = Double.parseDouble(lblTotal.getText());
+            double ivaFinal = Double.parseDouble(lblIva.getText());
+            double totalFinal = Double.parseDouble(lblTotal.getText());
             Factura f = new Factura(
                     cbNifCliente.getSelectedItem().toString(),
-                    tfNifEmisor.getText(),
-                    tfFechaActual.toString(),
+                    cbNifEmisor.getSelectedItem().toString(),
+                    HelperClass.dateToString(LocalDate.now()),
                     base,
-                    iva,
-                    total,
+                    ivaFinal,
+                    totalFinal,
                     false,
-                    tfNumFactura.toString()
+                    tfNumCuenta.getText()
             );
             if (conn.guardarFactura(f)) {
                 HelperClass.lanzarAlerta(
@@ -475,6 +516,12 @@ public class ListaFacturas extends javax.swing.JDialog {
             String concepto = tfConcepto.getText();
             int cantidad = Integer.parseInt(tfUnidades.getText());
             double precio = Double.parseDouble(tfPrecio.getText());
+            double ivaTf = Double.parseDouble(tfIva.getText());
+            
+            calculoIva = ivaTf / 100;
+            
+            actualizarLabels(precio * cantidad);
+            tfIva.setEditable(false);
             
             Object[] data = { codNeumatico, concepto, cantidad, precio };
             
@@ -486,7 +533,11 @@ public class ListaFacturas extends javax.swing.JDialog {
         int index = tableFacturas.getSelectedRow();
         
         if (index != -1) {
+            double precio = (Double) tableModel.getValueAt(index, 3);
+            int cantidad = (int) tableModel.getValueAt(index, 2);
             
+            actualizarLabels(-(precio * cantidad));
+            tableModel.removeRow(index);
         } else {
             HelperClass.lanzarAlerta(
                     "Alerta", 
@@ -496,6 +547,10 @@ public class ListaFacturas extends javax.swing.JDialog {
             );
         }
     }//GEN-LAST:event_btnBorrarActionPerformed
+
+    private void tfFechaActualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfFechaActualActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfFechaActualActionPerformed
 
     /**
      * @param args the command line arguments
@@ -546,6 +601,7 @@ public class ListaFacturas extends javax.swing.JDialog {
     private javax.swing.JButton btnGuardar;
     private javax.swing.JComboBox<String> cbCodNeumatico;
     private javax.swing.JComboBox<String> cbNifCliente;
+    private javax.swing.JComboBox<String> cbNifEmisor;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -574,8 +630,7 @@ public class ListaFacturas extends javax.swing.JDialog {
     private javax.swing.JTextField tfFechaActual;
     private javax.swing.JTextField tfIva;
     private javax.swing.JTextField tfMarca;
-    private javax.swing.JTextField tfNifEmisor;
-    private javax.swing.JTextField tfNumFactura;
+    private javax.swing.JTextField tfNumCuenta;
     private javax.swing.JTextField tfPrecio;
     private javax.swing.JTextField tfUnidades;
     // End of variables declaration//GEN-END:variables
